@@ -28,6 +28,13 @@ else
   sed -r -i "s@^#?inter.broker.listener.name=.*@inter.broker.listener.name=$KAFKA_INTER_BROKER_LISTENER_NAME@g" "/opt/kafka/config/kraft/server.properties"
 fi
 
+if [[ -z "$KAFKA_LOG_RETENTION_HOURS" ]]; then
+  echo 'Using default log retention hours'
+else
+  echo "Using log retention hours: ${KAFKA_LOG_RETENTION_HOURS}"
+  sed -r -i "s@^#?log.retention.hours=.*@log.retention.hours=$KAFKA_LOG_RETENTION_HOURS@g" "/opt/kafka/config/kraft/server.properties"
+fi
+
 uuid=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
 /opt/kafka/bin/kafka-storage.sh format -t $uuid -c /opt/kafka/config/kraft/server.properties
 /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
